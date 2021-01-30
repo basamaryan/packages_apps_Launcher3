@@ -48,6 +48,7 @@ import com.android.launcher3.popup.SystemShortcut.AppInfo;
 import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.launcher3.util.InstantAppResolver;
 import com.android.launcher3.util.SplitConfigurationOptions.SplitPositionOption;
+import com.android.launcher3.util.PackageManagerHelper;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskThumbnailView;
 import com.android.quickstep.views.TaskView;
@@ -281,6 +282,17 @@ public interface TaskShortcutFactory {
                     .map((Function<SplitPositionOption, SystemShortcut>) option ->
                             new SplitSelectSystemShortcut(activity, taskView, option))
                     .collect(Collectors.toList());
+        }
+    };
+
+    TaskShortcutFactory UNINSTALL = new TaskShortcutFactory() {
+        @Override
+        public List<SystemShortcut> getShortcuts(BaseDraggingActivity activity,
+                TaskIdAttributeContainer taskContainer) {
+            return PackageManagerHelper.isSystemApp(activity,
+                    taskContainer.getTask().getTopComponent().getPackageName()) ? null :
+                    Collections.singletonList(new SystemShortcut.UnInstall(activity,
+                            taskContainer.getItemInfo(), taskContainer.getTaskView()));
         }
     };
 
